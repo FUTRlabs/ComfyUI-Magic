@@ -1,0 +1,42 @@
+files:
+  - path: /storage/shared_models/checkpoints/cyberrealistic_v40.safetensors
+    url: https://civitai.com/api/download/models/198401?type=Model&format=SafeTensor&size=pruned&fp=fp16
+  - path: /storage/shared_models/checkpoints/MOHAWK_v18VAEBaked.safetensors
+    url: https://huggingface.co/n0madic/MOHAWK_v18VAEBaked/resolve/main/MOHAWK_v18VAEBaked.safetensors?download=true  
+  - path: /storage/shared_models/upscale_models/RealESRGAN_x4.pth
+    url: https://huggingface.co/ai-forever/Real-ESRGAN/resolve/main/RealESRGAN_x4.pth?download=true
+  - path: /storage/shared_models/upscale_models/2xLexicaSwinIR.pth
+    url: https://github.com/Phhofm/models/raw/main/2xLexicaSwinIR/2xLexicaSwinIR.pth
+  - path: /storage/shared_models/upscale_models/RealESRGAN_x2.pth
+    url: https://huggingface.co/ai-forever/Real-ESRGAN/resolve/main/RealESRGAN_x2.pth?download=true
+  - path: /storage/ComfyUI/custom_nodes/ComfyUI-AnimateDiff-Evolved/models/mm_sd_v15_v2.ckpt
+    url: https://huggingface.co/guoyww/animatediff/resolve/main/mm_sd_v15_v2.ckpt?download=true
+  - path: /storage/ComfyUI/custom_nodes/ComfyUI-AnimateDiff-Evolved/motion-lora/v2_lora_PanLeft.ckpt
+    url: https://huggingface.co/guoyww/animatediff/resolve/main/v2_lora_PanLeft.ckpt?download=true
+  - path: /storage/ComfyUI/custom_nodes/ComfyUI-AnimateDiff-Evolved/motion-lora/v2_lora_PanRight.ckpt
+    url: https://huggingface.co/guoyww/animatediff/resolve/main/v2_lora_PanRight.ckpt?download=true
+  - path: /storage/ComfyUI/custom_nodes/ComfyUI-AnimateDiff-Evolved/motion-lora/v2_lora_RollingAnticlockwise.ckpt
+    url: https://huggingface.co/guoyww/animatediff/resolve/main/v2_lora_RollingAnticlockwise.ckpt?download=true 
+  - path: /storage/ComfyUI/custom_nodes/ComfyUI-AnimateDiff-Evolved/motion-lora/v2_lora_RollingClockwise.ckpt
+    url: https://huggingface.co/guoyww/animatediff/resolve/main/v2_lora_RollingClockwise.ckpt?download=true
+  - path: /storage/ComfyUI/custom_nodes/ComfyUI-AnimateDiff-Evolved/motion-lora/v2_lora_TiltDown.ckpt
+    url: https://huggingface.co/guoyww/animatediff/resolve/main/v2_lora_TiltDown.ckpt?download=true
+  - path: /storage/ComfyUI/custom_nodes/ComfyUI-AnimateDiff-Evolved/motion-lora/v2_lora_TiltUp.ckpt
+    url: https://huggingface.co/guoyww/animatediff/resolve/main/v2_lora_TiltUp.ckpt?download=true
+  - path: /storage/ComfyUI/custom_nodes/ComfyUI-AnimateDiff-Evolved/motion-lora/v2_lora_ZoomIn.ckpt
+    url: https://huggingface.co/guoyww/animatediff/resolve/main/v2_lora_ZoomIn.ckpt?download=true 
+  - path: /storage/ComfyUI/custom_nodes/ComfyUI-AnimateDiff-Evolved/motion-lora/v2_lora_ZoomOut.ckpt
+    url: https://huggingface.co/guoyww/animatediff/resolve/main/v2_lora_ZoomOut.ckpt?download=true
+  - path: /storage/shared_models/controlnet/controlnet11Models_animeline.safetensors
+    url: https://civitai.com/api/download/models/44879?type=Model&format=SafeTensor&size=pruned&fp=fp16
+  - path: /storage/shared_models/controlnet/controlnet11Models_animeline.yaml
+    url: https://civitai.com/api/download/models/44879?type=Config&format=Other
+  - path: /storage/shared_models/controlnet/upscale_models/RealESRGAN_x4plus.pth
+    url: https://github.com/xinntao/Real-ESRGAN/releases/download/v0.1.0/RealESRGAN_x4plus.pth
+  - path: /storage/shared_models/checkpoints/revAnimated_v122EOL.safetensors
+    url: https://civitai.com/api/download/models/46846?type=Model&format=SafeTensor&size=full&fp=fp32
+  - path: /storage/shared_models/vae/AnythingV5Ink_ink.pt
+    url: https://huggingface.co/frankjoshua/AnythingV5Ink_ink/resolve/main/vae/diffusion_pytorch_model.bin?download=true
+
+custom_nodes:
+  #  - https://github.com/ltdrdata/ComfyUI-Manager.git

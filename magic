@@ -1,0 +1,94 @@
+#!/bin/bash
+set -e
+
+
+fun_echo() {
+  toilet -w 90 -f term --gay -F border: $1 
+}
+
+if [ ! -d "/storage" ]; then
+    fun_echo "-- YOU MUST SET A STORAGE VOLUME WITH: -v /path/to/your/storage:/storage"
+    exit 1
+fi
+
+chmod -R 777 /storage
+
+toilet -w 90 -f term -F border 'This software is provided "as is" without any warranties, express or implied, including but not limited to warranties of merchantability, fitness for a particular purpose, or non-infringement. The authors, contributors, and distributors expressly disclaim any liability for direct, indirect, incidental, special, exemplary, or consequential damages arising from the use of this software. By using, distributing, or continuing to use this software, the user acknowledges acceptance of these terms, waives any and all claims against the authors, contributors, and distributors, and agrees not to sue them for any loss, damage, or injury resulting from the use of this software.'
+
+echo "Press 'y' to agree, any other key to exit"
+read -n 1 -s -r input  # Read a single character in silent mode
+
+if [ "$input" = "y" ]; then
+
+  toilet ComfyUI Magic -w 90 -f pagga -F border:
+
+  fun_echo "Proudly sponsored by MineTheFutr.com"
+else
+  exit 0 
+fi
+
+mkdir -p /storage/shared_models/
+mkdir -p /storage/custom_nodes/
+mkdir -p /storage/models/
+
+chmod -R 777 /storage/shared_models
+
+yaml="/storage/shared_models/extra_downloads.yml"
+
+if [ ! -e $yaml ]; then
+  fun_echo "Sample extra_models.yml has been placed in the shared_models dir."
+  cp /extra_downloads.yml /storage/shared_models/extra_downloads.yml
+fi
+
+fun_echo "Downloading extra models and custom_nodes from shared_models/extra_downloads.yml..."
+
+mkdir -p /storage/ComfyUI
+cp -r /workspace/ComfyUI/* /storage/ComfyUI/
+
+chmod -R 777 /storage
+
+
+# Define base directory from YAML file
+fun_echo "Checking Model Downloads..."
+# Loop over the files and download them
+yq e '.files[] | [.path, .url] | join(" ")' $yaml | while read -r line; do
+  # Read path and url into separate variables
+  read -r path url <<< "$line"
+
+  # Create full path by combining base directory and file path
+  full_path="${path}"
+
+  # Create directory structure if it does not exist
+  mkdir -p "$(dirname "$full_path")"
+
+  # Download the file
+  wget -nc -O $full_path $url || true
+  done
+
+  fun_echo "Checking Custom Nodes...."
+  # Handle custom nodes (if needed)
+  yq e '.custom_nodes[]' $yaml | while read -r repo; do
+    # Perform actions with the custom node URLs, such as git cloning
+    repo_name=$(basename "$repo" .git)
+
+    repo_dir="/storage/ComfyUI/custom_nodes/${repo_name}"
+    if [ ! -d "$repo_dir" ]; then
+      # Directory does not exist, so clone the repository
+      git clone "$repo" "$repo_dir"
+    else
+      # Directory exists, so just fetch the latest changes without checkout
+      git -C "$repo_dir" fetch --all
+    fi
+  done
+
+if [ -z "${SUPPLIER_ID}" ]; then
+  fun_echo "If you'd like to earn during your idle GPU time, go to MineTheFutr.com"
+
+  fun_echo "Starting ComfyUI..."
+  cd /storage/ComfyUI && python main.py --listen 0.0.0.0 --extra-model-paths-config /extra_model_paths.yml
+else
+  fun_echo "FUTR SUPPLIER_ID Detected."
+  fun_echo "Connecting to MineTheFutr.com with ID ${SUPPLIER_ID}"
+  cd ~/ && node ~/heartbeat.js
+fi
+
