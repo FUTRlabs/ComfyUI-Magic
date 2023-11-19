@@ -231,7 +231,7 @@ async function mainLoop() {
 
 function getGpuInfo() {
   return new Promise((resolve, reject) => {
-    exec('nvidia-smi --query-gpu=timestamp,driver_version,name,memory.total,memory.used,memory.free,pstate,temperature.gpu,power.draw,power.limit --format=csv,noheader', (error, stdout, stderr) => {
+    exec('nvidia-smi --query-gpu=timestamp,driver_version,name,memory.total,memory.used,memory.free,pstate,power.draw,power.limit --format=csv,noheader', (error, stdout, stderr) => {
       if (error) {
         console.log('Error fetching GPU info:');
         console.log(stderr);
