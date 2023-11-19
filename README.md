@@ -47,7 +47,7 @@ We place a sample "extra_downloads.yml" file in your storage directory.
 
 Edit that file to download and place any custom models you'd like to have, then restart the container and watch the magic.
 
-See this file for our default models we download at boot: extra_downloads.yml
+See this file for our default models we download at boot: [extra_downloads.yml](extra_downloads.yml)
 
 To add your own models, take note that the `path` item in the yml is the path inside the container. 
 
