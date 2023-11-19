@@ -1,4 +1,4 @@
-# ComfyUI-Magic: A 🔋batteries🔋 included way to run ComfyUI
+# ComfyUI-Magic: 🔋Batteries🔋 included 
 
 Preview: 
 
