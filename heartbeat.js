@@ -92,17 +92,25 @@ async function waitForComfy() {
     }
 }
 
-async function mainLoop() {
-  await waitForComfy();
+async function register() {
+  const gpuStats = await getGpuInfo();
+
   const defaultRoute = await getDefaultRoute();
 
-  const response = await axios.get(`http://${defaultRoute}/register/${supplierID}`);
+  const response = await axios.get(`http://${defaultRoute}/register/${supplierID}?gpuStats=${gpuStats}`);
 
   if (response.data && response.data.ok === false) {
     throw new Error("The supplier registration failed. Please verify the SUPPLIER_ID has been provided via docker environment variables.");
   } else {
     console.log("Registration succeeded.");
   }
+}
+
+async function mainLoop() {
+  await waitForComfy();
+  const defaultRoute = await getDefaultRoute();
+
+  await register();
 
   const connectionString = `redis://${supplierID}:@${defaultRoute.split(":")[0]}:6379`;
   
