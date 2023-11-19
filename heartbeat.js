@@ -106,14 +106,24 @@ async function register() {
   }
 }
 
+
 async function mainLoop() {
   await waitForComfy();
+  try {
+    await register();
+  } catch(error) {};
+
   const defaultRoute = await getDefaultRoute();
-
-  await register();
-
   const connectionString = `redis://${supplierID}:@${defaultRoute.split(":")[0]}:6379`;
-  
+  const supplierQueue = new Queue("supplierQueue", connectionString);
+
+  supplierQueue.on("error", async function(error) {
+    console.log(error);
+    try {
+      await register();
+    } catch(error) {}
+  });
+
   var manualRedis = new Redis(connectionString, {
     reconnectOnError: function(err) {
       console.log("FUTR: ERROR CONNECTING TO QUEUE");
@@ -127,9 +137,9 @@ async function mainLoop() {
   });
 
   try { 
-    console.log("Connecting to Queue...");
+    axios.get(`http://${defaultRoute}/register/${supplierID}`)
 
-    const supplierQueue = new Queue("supplierQueue", connectionString);
+    console.log("Connecting to Queue...");
 
     await supplierQueue.process(async function (job, done) {
       console.log(`Caught a job: ${job.id}`);
@@ -309,6 +319,10 @@ startComfyUi();
 
 (async function main() {
   while(true) {
-    await mainLoop();
+    try {
+      await mainLoop();
+    } catch(error) {
+      console.log(error);
+    }
   }
 })();
