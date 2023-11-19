@@ -93,52 +93,40 @@ async function waitForComfy() {
 }
 
 async function register() {
-  const gpuStats = await getGpuInfo();
+  try {
+    const gpuStats = await getGpuInfo();
 
-  const defaultRoute = await getDefaultRoute();
+    const defaultRoute = await getDefaultRoute();
 
-  const response = await axios.get(`http://${defaultRoute}/register/${supplierID}?gpuStats=${gpuStats}`);
+    const response = await axios.get(`http://${defaultRoute}/register/${supplierID}?gpuStats=${gpuStats}`);
 
-  if (response.data && response.data.ok === false) {
-    throw new Error("The supplier registration failed. Please verify the SUPPLIER_ID has been provided via docker environment variables.");
-  } else {
-    console.log("Registration succeeded.");
+    if (response.data && response.data.ok === false) {
+      throw new Error("The supplier registration failed. Please verify the SUPPLIER_ID has been provided via docker environment variables.");
+    } else {
+      console.log("Registration succeeded.");
+    }
+  } catch (error) {
+    console.log("Registration error:");
+    console.log(error);
   }
 }
 
 
 async function mainLoop() {
   await waitForComfy();
-  try {
-    await register();
-  } catch(error) {};
+  await register();
 
   const defaultRoute = await getDefaultRoute();
   const connectionString = `redis://${supplierID}:@${defaultRoute.split(":")[0]}:6379`;
   const supplierQueue = new Queue("supplierQueue", connectionString);
 
   supplierQueue.on("error", async function(error) {
+    await register();
+    console.log("SUPPLIER QUEUE ERROR:");
     console.log(error);
-    try {
-      await register();
-    } catch(error) {}
-  });
-
-  var manualRedis = new Redis(connectionString, {
-    reconnectOnError: function(err) {
-      console.log("FUTR: ERROR CONNECTING TO QUEUE");
-      console.log(err.message);
-
-      return axios.get(`http://${defaultRoute}/register/${supplierID}`).then( () => {
-       return true; 
-      });
-    },
-    //enableReadyCheck: false
   });
 
   try { 
-    axios.get(`http://${defaultRoute}/register/${supplierID}`)
-
     console.log("Connecting to Queue...");
 
     await supplierQueue.process(async function (job, done) {
