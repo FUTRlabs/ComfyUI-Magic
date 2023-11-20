@@ -16,6 +16,7 @@ const Redis = require("ioredis");
 
 const production = true;
 
+let logs = [];
 
 const {
   S3Client,
@@ -165,6 +166,8 @@ async function mainLoop() {
 
         var gpuReadings = [];
 
+        logs = [];
+
         while(true) {
           // Check if the file exists
           if (fs.existsSync(filePath)) {
@@ -193,6 +196,7 @@ async function mainLoop() {
 
           } else {
             //console.log('File does not exist.');
+
           }
 
           try {
@@ -201,6 +205,10 @@ async function mainLoop() {
           } catch (error) {
             console.log("Cannot retrieve GPU Readings.");
             console.log(error);
+          }
+
+          if(logs.join(" ").includes("Exception during processing")) {
+            done(new Error("COMFY WORKFLOW ERROR:\n\n" + getLast100LogLines()));
           }
 
           await sleep(50);
@@ -271,7 +279,6 @@ function getPythonInfo(callback) {
 }
 
 let comfyUiProcess;
-let logs = [];
 
 function startComfyUi() {
   comfyUiProcess = spawn('python', ['/storage/ComfyUI/main.py', '--listen', '0.0.0.0', '--extra-model-paths-config', '/extra_model_paths.yml']);
@@ -292,7 +299,7 @@ function startComfyUi() {
 
 function processLog(data) {
   const logLine = data.toString();
-  console.log(logLine); // Print the log line
+  console.log("COMFY: " + logLine); // Print the log line
   logs.push(logLine);
   if (logs.length > 100) {
     logs.shift(); // Remove the oldest log line if more than 100 lines are stored
@@ -310,6 +317,7 @@ startComfyUi();
     try {
       await mainLoop();
     } catch(error) {
+      console.log("Main Loop Error");
       console.log(error);
     }
   }
