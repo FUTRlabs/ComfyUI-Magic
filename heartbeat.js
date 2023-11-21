@@ -20,8 +20,8 @@ console.log(process.env.PRODUCTION);
 
 var production = true;
 
-if(process.env.PRODUCTION) {
-  production = process.env.PRODUCTION;
+if(process.env.PRODUCTION === 'false') {
+  production = false;
 } 
 
 
@@ -63,7 +63,7 @@ if(supplierID == null) {
 // Get the default IP of the host for developers to run the queue and this locally
 const getDefaultRoute = async () => {
   return new Promise((resolve, reject) => {
-    if(production != true && production != "true") {
+    if(!production) {
       exec("/sbin/ip route|awk '/default/ { print $3 }'", (error, stdout, stderr) => {
         if (error) {
           return reject(error);
