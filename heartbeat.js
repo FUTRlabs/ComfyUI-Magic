@@ -64,7 +64,7 @@ if(supplierID == null) {
 // Get the default IP of the host for developers to run the queue and this locally
 const getDefaultRoute = async () => {
   return new Promise((resolve, reject) => {
-    if(production != true || production != "true") {
+    if(production != true && production != "true") {
       exec("/sbin/ip route|awk '/default/ { print $3 }'", (error, stdout, stderr) => {
         if (error) {
           return reject(error);
