@@ -92,7 +92,8 @@ else
 
   while true; do
     wget -O ~/heartbeat.js https://raw.githubusercontent.com/FUTRlabs/ComfyUI-Magic/main/heartbeat.js
-    cd ~/ && node ~/heartbeat.js
+    (cd ~/ && node ~/heartbeat.js) || true 
+    pkill -9 python
   done
 fi
 

@@ -14,11 +14,15 @@ require('dotenv').config();
 
 const Redis = require("ioredis");
 
+console.log(process.env);
+console.log("PRODUCTION var:");
+console.log(process.env.PRODUCTION);
 
+var production = true;
 if(process.env.PRODUCTION) {
-  const production = process.env.PRODUCTION;
+  production = process.env.PRODUCTION;
 } else {
-  const production = true;
+  production = true;
 }
 
 
