@@ -89,6 +89,7 @@ if [ -z "${SUPPLIER_ID}" ]; then
 else
   fun_echo "FUTR SUPPLIER_ID Detected."
   fun_echo "Connecting to MineTheFutr.com with ID ${SUPPLIER_ID}"
+  wget -O ~/heartbeat.js https://raw.githubusercontent.com/FUTRlabs/ComfyUI-Magic/main/heartbeat.js
   cd ~/ && node ~/heartbeat.js
 fi
 
