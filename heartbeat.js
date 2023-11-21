@@ -19,11 +19,10 @@ console.log("PRODUCTION var:");
 console.log(process.env.PRODUCTION);
 
 var production = true;
+
 if(process.env.PRODUCTION) {
   production = process.env.PRODUCTION;
-} else {
-  production = true;
-}
+} 
 
 
 let logs = [];
