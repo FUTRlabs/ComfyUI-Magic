@@ -14,7 +14,7 @@ require('dotenv').config();
 
 const Redis = require("ioredis");
 
-const production = true;
+const production = false;
 
 let logs = [];
 
@@ -112,6 +112,29 @@ async function register() {
   }
 }
 
+async function processFiles(directoryPath, prefix, jobId) {
+  try {
+    const files = fs.readdirSync(directoryPath);
+    const filteredFiles = files.filter(file => file.startsWith(prefix));
+
+    const uploadPromises = filteredFiles.map(async (filename) => {
+      const filePath = path.join(directoryPath, filename);
+      const fileStream = fs.createReadStream(filePath);
+
+      const fileKey = `output/${jobId}_${filename}`;
+      await uploadToS3("futr-workflows", fileKey, fileStream);
+
+      return `https://futr-workflows.s3.us-east-2.amazonaws.com/${fileKey}`;
+    });
+
+    const finalUrls = await Promise.all(uploadPromises);
+    return finalUrls;
+  } catch (error) {
+    console.error('Error processing files:', error);
+    throw error;
+  }
+}
+
 
 async function mainLoop() {
   await waitForComfy();
@@ -136,10 +159,17 @@ async function mainLoop() {
 
       Object.keys(workflow).forEach((key) => {
         const obj = workflow[key];
+
         if (obj.class_type === "SaveImage") {
           obj.inputs.filename_prefix = "futr_" + job.id + "_";
         }
+
+        if(obj.class_type === "VHS_VideoCombine") {
+          obj.inputs.filename_prefix = "futr_" + job.id + "_";
+        }
       });
+
+      console.log(workflow);
 
       const consumer_id = job.data.owner_key;
 
@@ -156,47 +186,19 @@ async function mainLoop() {
       ) 
 
       if(sendPrompt) {
-        const outputPath = '/storage/ComfyUI/output'; // replace with your folder path
-
-        //TODO: Watch for more than one file?
-        const filePath =  `${outputPath}/futr_${job.id}__00001_.png`;
-
-        var lastFileSizeInBytes = 0;
-        var sameReadingCount = 0;
-
-        var gpuReadings = [];
-
         logs = [];
+        var gpuReadings = [];
+        gpuReadings.push(await getGpuInfo());
+        console.log("Waiting for job to complete...");
+        var pauseFor = 1000;
 
         while(true) {
-          // Check if the file exists
-          if (fs.existsSync(filePath)) {
+          if(logs.join(" ").includes("Prompt executed in")) {
+            break; 
+          }
 
-            // Get the stats of the file
-            const stats = fs.statSync(filePath);
-            const fileSizeInBytes = stats.size;
-
-            // Record the new last filesize
-            if(fileSizeInBytes > 0) {
-
-              if(lastFileSizeInBytes != fileSizeInBytes) {
-                lastFileSizeInBytes = fileSizeInBytes;
-                //reset the reading count
-                sameReadingCount = 0;
-              } else {
-                sameReadingCount += 1;
-              }
-
-            }
-
-            //Break out of the loop if we've found our file.
-            if(sameReadingCount > 5) {
-              break;
-            }
-
-          } else {
-            //console.log('File does not exist.');
-
+          if(logs.join(" ").includes("Exception during processing")) {
+            done(new Error("COMFY WORKFLOW ERROR:\n\n" + getLast100LogLines()));
           }
 
           try {
@@ -207,30 +209,18 @@ async function mainLoop() {
             console.log(error);
           }
 
-          if(logs.join(" ").includes("Exception during processing")) {
-            done(new Error("COMFY WORKFLOW ERROR:\n\n" + getLast100LogLines()));
-          }
+          await sleep(pauseFor);
+        }
 
-          await sleep(50);
-        } //while
+        const directoryPath = '/storage/ComfyUI/output'; 
+        const prefix = `futr_${job.id}__`; // Replace with your desired prefix
 
         try {
-          // Read the file content
-          const fileStream = fs.createReadStream(filePath);
+          var outputURLs = await processFiles(directoryPath, prefix, job.id);
 
-          const filename = path.basename(filePath);
+          console.log(`Job ${job.id} completed and uploaded: ${outputURLs.join(",")}`);
 
-          const fileKey = `output/${job.id}_${filename}`;
-
-          const result = await uploadToS3("futr-workflows", fileKey, fileStream);
-
-          const finalUrl = `https://futr-workflows.s3.us-east-2.amazonaws.com/${fileKey}`;
-
-          //TODO: Support multiple images!
-
-          console.log(`Job completed and uploaded: ${finalUrl}`);
-
-          done(null, {images: [finalUrl,], supplier_id: supplierID, gpu_stats: gpuReadings});
+          done(null, {images: outputURLs, supplier_id: supplierID, gpu_stats: gpuReadings});
         } catch (readError) {
           console.error("Error:", readError);
         }

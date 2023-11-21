@@ -37,6 +37,10 @@ files:
     url: https://civitai.com/api/download/models/46846?type=Model&format=SafeTensor&size=full&fp=fp32
   - path: /storage/shared_models/vae/AnythingV5Ink_ink.pt
     url: https://huggingface.co/frankjoshua/AnythingV5Ink_ink/resolve/main/vae/diffusion_pytorch_model.bin?download=true
+  - path: /storage/shared_models/checkpoints/rev_1.2.2-fp16.safetensors
+    url: https://huggingface.co/s6yx/ReV_Animated/resolve/main/rev_1.2.2/rev_1.2.2-fp16.safetensors?download=true
+  - path: /storage/shared_models/upscale_models/2x-sudo-UltraCompact.pth
+    url: https://objectstorage.us-phoenix-1.oraclecloud.com/n/ax6ygfvpvzka/b/open-modeldb-files/o/2x-sudo-UltraCompact.pth
 
 custom_nodes:
   #  - https://github.com/ltdrdata/ComfyUI-Manager.git
