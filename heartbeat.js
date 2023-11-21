@@ -14,7 +14,7 @@ require('dotenv').config();
 
 const Redis = require("ioredis");
 
-const production = false;
+const production = true;
 
 let logs = [];
 
