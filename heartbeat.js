@@ -160,11 +160,7 @@ async function mainLoop() {
       Object.keys(workflow).forEach((key) => {
         const obj = workflow[key];
 
-        if (obj.class_type === "SaveImage") {
-          obj.inputs.filename_prefix = "futr_" + job.id + "_";
-        }
-
-        if(obj.class_type === "VHS_VideoCombine") {
+        if (obj.class_type === "SaveImage" || obj.class_type === "Save Image" || obj.class_type === "VHS_VideoCombine") {
           obj.inputs.filename_prefix = "futr_" + job.id + "_";
         }
       });

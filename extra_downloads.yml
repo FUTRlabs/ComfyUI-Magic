@@ -41,6 +41,7 @@ files:
     url: https://huggingface.co/s6yx/ReV_Animated/resolve/main/rev_1.2.2/rev_1.2.2-fp16.safetensors?download=true
   - path: /storage/shared_models/upscale_models/2x-sudo-UltraCompact.pth
     url: https://objectstorage.us-phoenix-1.oraclecloud.com/n/ax6ygfvpvzka/b/open-modeldb-files/o/2x-sudo-UltraCompact.pth
-
+  - path: /storage/shared_models/checkpoints/meinaunreal_v41.safetensors
+    url: https://civitai.com/api/download/models/112809?type=Model&format=SafeTensor&size=pruned&fp=fp16
 custom_nodes:
   #  - https://github.com/ltdrdata/ComfyUI-Manager.git
