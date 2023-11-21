@@ -50,6 +50,7 @@ chmod -R 777 /storage
 
 # Define base directory from YAML file
 fun_echo "Checking Model Downloads..."
+
 # Loop over the files and download them
 yq e '.files[] | [.path, .url] | join(" ")' $yaml | while read -r line; do
   # Read path and url into separate variables
@@ -63,23 +64,24 @@ yq e '.files[] | [.path, .url] | join(" ")' $yaml | while read -r line; do
 
   # Download the file
   wget -nc -O $full_path $url || true
-  done
+done
 
-  fun_echo "Checking Custom Nodes...."
-  # Handle custom nodes (if needed)
-  yq e '.custom_nodes[]' $yaml | while read -r repo; do
-    # Perform actions with the custom node URLs, such as git cloning
-    repo_name=$(basename "$repo" .git)
+fun_echo "Checking Custom Nodes...."
 
-    repo_dir="/storage/ComfyUI/custom_nodes/${repo_name}"
-    if [ ! -d "$repo_dir" ]; then
-      # Directory does not exist, so clone the repository
-      git clone "$repo" "$repo_dir"
-    else
-      # Directory exists, so just fetch the latest changes without checkout
-      git -C "$repo_dir" fetch --all
-    fi
-  done
+# Handle custom nodes (if needed)
+yq e '.custom_nodes[]' $yaml | while read -r repo; do
+  # Perform actions with the custom node URLs, such as git cloning
+  repo_name=$(basename "$repo" .git)
+
+  repo_dir="/storage/ComfyUI/custom_nodes/${repo_name}"
+  if [ ! -d "$repo_dir" ]; then
+    # Directory does not exist, so clone the repository
+    git clone "$repo" "$repo_dir"
+  else
+    # Directory exists, so just fetch the latest changes without checkout
+    git -C "$repo_dir" fetch --all
+  fi
+done
 
 if [ -z "${SUPPLIER_ID}" ]; then
   fun_echo "If you'd like to earn during your idle GPU time, go to MineTheFutr.com"
