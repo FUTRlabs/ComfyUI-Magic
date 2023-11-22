@@ -307,8 +307,22 @@ function getLast100LogLines() {
 
 startComfyUi();
 
+function triggerRegister() {
+  register()
+    .then(function() {
+      console.log(`${new Date().toISOString()} - Reported in to FUTR Queue successfully.`);
+    })
+    .catch(function(error) {
+      console.log(error);
+    });
+}
+
+
+setInterval(triggerRegister, 60000);
+
 (async function main() {
   while(true) {
+
     try {
       await mainLoop();
     } catch(error) {

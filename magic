@@ -102,7 +102,11 @@ else
   fun_echo "Connecting to MineTheFutr.com with ID ${SUPPLIER_ID}"
 
   while true; do
-    wget -O ~/heartbeat.js https://raw.githubusercontent.com/FUTRlabs/ComfyUI-Magic/main/heartbeat.js
+    if [ "${PRODUCTION}" != false ]; then
+      fun_echo "Updating heartbeat.js before starting..."
+      wget -O ~/heartbeat.js https://raw.githubusercontent.com/FUTRlabs/ComfyUI-Magic/main/heartbeat.js
+    fi
+
     (cd ~/ && node ~/heartbeat.js) || true 
     pkill -9 python
   done
