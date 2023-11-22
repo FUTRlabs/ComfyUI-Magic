@@ -14,10 +14,6 @@ require('dotenv').config();
 
 const Redis = require("ioredis");
 
-console.log(process.env);
-console.log("PRODUCTION var:");
-console.log(process.env.PRODUCTION);
-
 var production = true;
 
 if(process.env.PRODUCTION === 'false') {
@@ -174,8 +170,6 @@ async function mainLoop() {
         }
       });
 
-      console.log(workflow);
-
       const consumer_id = job.data.owner_key;
 
       const sendPrompt = await axios.post("http://localhost:8188/prompt", JSON.stringify({"prompt": workflow}), {
@@ -198,12 +192,15 @@ async function mainLoop() {
         var pauseFor = 1000;
 
         while(true) {
-          if(logs.join(" ").includes("Prompt executed in")) {
-            break; 
-          }
 
+          console.log("Waiting for job to complete...");
           if(logs.join(" ").includes("Exception during processing")) {
             done(new Error("COMFY WORKFLOW ERROR:\n\n" + getLast100LogLines()));
+            return;
+          }
+
+          if(logs.join(" ").includes("Prompt executed in")) {
+            break; 
           }
 
           try {
@@ -218,7 +215,7 @@ async function mainLoop() {
         }
 
         const directoryPath = '/storage/ComfyUI/output'; 
-        const prefix = `futr_${job.id}__`; // Replace with your desired prefix
+        const prefix = `futr_${job.id}__`;
 
         try {
           var outputURLs = await processFiles(directoryPath, prefix, job.id);
