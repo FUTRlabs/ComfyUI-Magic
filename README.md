@@ -24,12 +24,12 @@ docker run --name comfyui-magic --restart=unless-stopped -p 8188:8188 --gpus all
 ### Run it as a service
 
 ```
-docker run -d --name comfyui-magic --restart=unless-stopped -p 8188:8188 --gpus all -it --rm -v magic:/storage futrlabsmagic/comfyui-magic:latest
+docker run -d --name comfyui-magic --restart=unless-stopped -p 8188:8188 --gpus all -it -v magic:/storage futrlabsmagic/comfyui-magic:latest
 ```
 
 ### Auto accept terms and run as service
 ```
-docker run -e AUTOACCEPT=yes -d --name comfyui-magic --restart=unless-stopped -p 8188:8188 --gpus all -it --rm -v magic:/storage futrlabsmagic/comfyui-magic:latest
+docker run -e AUTOACCEPT=yes -d --name comfyui-magic --restart=unless-stopped -p 8188:8188 --gpus all -it -v magic:/storage futrlabsmagic/comfyui-magic:latest
 ```
 
 ## Earn USDC and FUTR
