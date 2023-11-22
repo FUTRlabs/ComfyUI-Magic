@@ -318,7 +318,7 @@ function triggerRegister() {
 }
 
 
-setInterval(triggerRegister, 60000);
+setInterval(triggerRegister, 10000);
 
 (async function main() {
   while(true) {
