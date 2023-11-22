@@ -17,7 +17,7 @@ Preview:
 3. Run the following command if all you want is a ComfyUI: 
 
 ```
-docker run --name comfyui-magic -p 8188:8188 --gpus all -it --rm -v magic:/storage comfyui-magic:latest
+docker run --name comfyui-magic -p 8188:8188 --gpus all -it --rm -v magic:/storage futrlabsmagic/comfyui-magic:latest
 ```
 
 ## Earn USDC and FUTR
