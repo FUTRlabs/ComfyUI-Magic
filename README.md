@@ -1,5 +1,11 @@
 # ComfyUI-Magic: 🔋Batteries🔋 included 
 
+## Why
+
+We're AI Art enthusiasts, developers, and artists. We wanted this to be easier for everyone to reliably use. 
+
+This work began in discord channels and through serendipity - it felt wrong not to give this back to everyone, so we open sourced it here.
+
 Preview: 
 
 [![asciicast](https://asciinema.org/a/621943.svg)](https://asciinema.org/a/621943)
