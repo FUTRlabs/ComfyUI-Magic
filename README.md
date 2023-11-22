@@ -15,9 +15,21 @@ Preview:
 1. Update your NVIDIA Drivers (only NVIDIA cards supported right now)
 2. Install Docker and NVIDIA's container toolkit (Windows: Install WSL, then install Docker Desktop)
 3. Run the following command if all you want is a ComfyUI: 
+4. Have roughly 20GB of space ready for default models and room to grow for any others you might want to add!
 
 ```
-docker run --name comfyui-magic -p 8188:8188 --gpus all -it --rm -v magic:/storage futrlabsmagic/comfyui-magic:latest
+docker run --name comfyui-magic --restart=unless-stopped -p 8188:8188 --gpus all -it --rm -v magic:/storage futrlabsmagic/comfyui-magic:latest
+```
+
+### Run it as a service
+
+```
+docker run -d --name comfyui-magic --restart=unless-stopped -p 8188:8188 --gpus all -it --rm -v magic:/storage futrlabsmagic/comfyui-magic:latest
+```
+
+### Auto accept terms and run as service
+```
+docker run -e -d --name comfyui-magic --restart=unless-stopped -p 8188:8188 --gpus all -it --rm -v magic:/storage futrlabsmagic/comfyui-magic:latest
 ```
 
 ## Earn USDC and FUTR

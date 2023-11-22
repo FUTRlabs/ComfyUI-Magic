@@ -15,17 +15,26 @@ chmod -R 777 /storage
 
 toilet -w 90 -f term -F border 'This software is provided "as is" without any warranties, express or implied, including but not limited to warranties of merchantability, fitness for a particular purpose, or non-infringement. The authors, contributors, and distributors expressly disclaim any liability for direct, indirect, incidental, special, exemplary, or consequential damages arising from the use of this software. By using, distributing, or continuing to use this software, the user acknowledges acceptance of these terms, waives any and all claims against the authors, contributors, and distributors, and agrees not to sue them for any loss, damage, or injury resulting from the use of this software.'
 
-echo "Press 'y' to agree, any other key to exit"
-read -n 1 -s -r input  # Read a single character in silent mode
-
-if [ "$input" = "y" ]; then
-
-  toilet ComfyUI Magic -w 90 -f pagga -F border:
-
-  fun_echo "Proudly sponsored by MineTheFutr.com"
+if [ -f /storage/accepted ] || [ -n "$AUTOACCEPT" ]; then
+  fun_echo "/accepted file detected. Previously accepted."
 else
-  exit 0 
+  fun_echo "Press 'y' to agree, any other key to exit"
+
+  read -n 1 -s -r input  # Read a single character in silent mode
+
+  if [ "$input" = "y" ]; then
+    fun_echo "Storing acceptance."
+  else
+    exit 0 
+  fi
 fi
+
+touch /storage/accepted
+
+toilet ComfyUI Magic -w 90 -f pagga -F border:
+
+fun_echo "Proudly sponsored by MineTheFutr.com"
+
 
 mkdir -p /storage/shared_models/
 mkdir -p /storage/custom_nodes/
@@ -98,4 +107,3 @@ else
     pkill -9 python
   done
 fi
-
