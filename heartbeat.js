@@ -250,13 +250,13 @@ async function processJob(job, done) {
       } catch (readError) {
         console.error("Error:", readError);
       }
-
-      await resumeAllQueues();
     }
   } catch(connectError) {
     console.log(connectError);
     console.log(`COULD NOT CONNECT TO QUEUE... Trying again in 5 seconds...`);
   } 
+
+  await resumeAllQueues();
 }
 
 async function mainLoop() {
