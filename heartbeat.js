@@ -140,98 +140,151 @@ async function processFiles(directoryPath, prefix, jobId) {
   }
 }
 
+function getVRAMQueueBuckets(gpuJSON) {
+  const gpuData = JSON.parse(gpuJSON);
+  // Extract total memory and convert to GB
+  const totalMemoryMiB = parseInt(gpuData.memory.total);
+  const totalMemoryGB = Math.ceil(totalMemoryMiB / 1024); // Convert MiB to GB and round up
+
+  // Determine VRAM bucket
+  let vramBuckets = [];
+  if (totalMemoryGB <= 2) {
+    vramBuckets = ['2GB_VRAM'];
+  } else if (totalMemoryGB <= 4) {
+    vramBuckets = ['2GB_VRAM', '4GB_VRAM'];
+  } else if (totalMemoryGB <= 6) {
+    vramBuckets = ['2GB_VRAM', '4GB_VRAM', '6GB_VRAM'];
+  } else if (totalMemoryGB <= 8) {
+    vramBuckets = ['2GB_VRAM', '4GB_VRAM', '6GB_VRAM','8GB_VRAM'];
+  } else if (totalMemoryGB <= 12) {
+    vramBuckets = ['2GB_VRAM', '4GB_VRAM', '6GB_VRAM','8GB_VRAM', '12GB_VRAM'];
+  } else {
+    vramBuckets = ['2GB_VRAM', '4GB_VRAM', '6GB_VRAM','8GB_VRAM', '12GB_VRAM','16GB_VRAM'];
+  }
+
+  return vramBuckets;
+}
+
+var queues = { };
+
+async function pauseAllQueues() {
+  console.log("Pausing all queues.");
+  Object.values(queues).forEach(queue => {
+    queue.pause(true, true);
+  });
+}
+
+async function resumeAllQueues() {
+  console.log("Resuming all queues.");
+  Object.values(queues).forEach(queue => {
+    queue.resume(true);
+  });
+}
+
+async function processJob(job, done) {
+  try { 
+    console.log(`Caught a job: ${job.id}`);
+    const workflow = job.data.workflow;
+    await pauseAllQueues();
+
+    Object.keys(workflow).forEach((key) => {
+      const obj = workflow[key];
+
+      if (obj.class_type === "SaveImage" || obj.class_type === "Save Image" || obj.class_type === "VHS_VideoCombine") {
+        obj.inputs.filename_prefix = "futr_" + job.id + "_";
+      }
+    });
+
+    const consumer_id = job.data.owner_key;
+
+    const sendPrompt = await axios.post("http://localhost:8188/prompt", JSON.stringify({"prompt": workflow}), {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }).catch(
+      function (error) {
+        console.log("COMFY ERROR PROCESSING WORKFLOW:",error)
+        done(new Error("COMFY WORKFLOW ERROR:\n\n" + getLast100LogLines()));
+        return null;
+      }
+    ) 
+
+    if(sendPrompt) {
+      logs = [];
+      var gpuReadings = [];
+      gpuReadings.push(await getGpuInfo());
+      console.log("Waiting for job to complete...");
+      var pauseFor = 1000;
+
+      while(true) {
+        console.log("Waiting for job to complete...");
+        if(logs.join(" ").includes("Exception during processing")) {
+          done(new Error("COMFY WORKFLOW ERROR:\n\n" + getLast100LogLines()));
+          return;
+        }
+
+        if(logs.join(" ").includes("Prompt executed in")) {
+          break; 
+        }
+
+        try {
+          var gpuResults = await getGpuInfo();
+          gpuReadings.push(gpuResults);
+        } catch (error) {
+          console.log("Cannot retrieve GPU Readings.");
+          console.log(error);
+        }
+
+        await sleep(pauseFor);
+      }
+
+      const directoryPath = '/storage/ComfyUI/output'; 
+      const prefix = `futr_${job.id}__`;
+
+      try {
+        var outputURLs = await processFiles(directoryPath, prefix, job.id);
+
+        console.log(`Job ${job.id} completed and uploaded: ${outputURLs.join(",")}`);
+
+        done(null, {images: outputURLs, supplier_id: supplierID, gpu_stats: gpuReadings});
+      } catch (readError) {
+        console.error("Error:", readError);
+      }
+
+      await resumeAllQueues();
+    }
+  } catch(connectError) {
+    console.log(connectError);
+    console.log(`COULD NOT CONNECT TO QUEUE... Trying again in 5 seconds...`);
+  } 
+}
 
 async function mainLoop() {
+  console.log("Beginning main loop...");
   await waitForComfy();
   await register();
 
   const defaultRoute = await getDefaultRoute();
   const connectionString = `redis://${supplierID}:@${defaultRoute.split(":")[0]}:6379`;
-  const supplierQueue = new Queue("supplierQueue", connectionString);
 
-  supplierQueue.on("error", async function(error) {
-    await register();
-    console.log("SUPPLIER QUEUE ERROR:");
-    console.log(error);
+  const vramBuckets = getVRAMQueueBuckets(await getGpuInfo());
+  console.log(`VRAM BUCKETS: ${vramBuckets}`);
+
+  var processPromises = [];
+  vramBuckets.forEach(bucket => {
+    queues[bucket] = new Queue(bucket, connectionString);
+    queues[bucket].on("error", async function(error) {
+      await register();
+      console.log("SUPPLIER QUEUE ERROR:");
+      console.log(error);
+    });
+
+    console.log("Pushing process function to promises for queue: " + bucket);
+    processPromises.push(queues[bucket].process(processJob));
+
   });
 
-  try { 
-    console.log("Connecting to Queue...");
-
-    await supplierQueue.process(async function (job, done) {
-      console.log(`Caught a job: ${job.id}`);
-      const workflow = job.data.workflow;
-
-      Object.keys(workflow).forEach((key) => {
-        const obj = workflow[key];
-
-        if (obj.class_type === "SaveImage" || obj.class_type === "Save Image" || obj.class_type === "VHS_VideoCombine") {
-          obj.inputs.filename_prefix = "futr_" + job.id + "_";
-        }
-      });
-
-      const consumer_id = job.data.owner_key;
-
-      const sendPrompt = await axios.post("http://localhost:8188/prompt", JSON.stringify({"prompt": workflow}), {
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      }).catch(
-        function (error) {
-          console.log("COMFY ERROR PROCESSING WORKFLOW:",error)
-          done(new Error("COMFY WORKFLOW ERROR:\n\n" + getLast100LogLines()));
-          return null;
-        }
-      ) 
-
-      if(sendPrompt) {
-        logs = [];
-        var gpuReadings = [];
-        gpuReadings.push(await getGpuInfo());
-        console.log("Waiting for job to complete...");
-        var pauseFor = 1000;
-
-        while(true) {
-
-          console.log("Waiting for job to complete...");
-          if(logs.join(" ").includes("Exception during processing")) {
-            done(new Error("COMFY WORKFLOW ERROR:\n\n" + getLast100LogLines()));
-            return;
-          }
-
-          if(logs.join(" ").includes("Prompt executed in")) {
-            break; 
-          }
-
-          try {
-            var gpuResults = await getGpuInfo();
-            gpuReadings.push(gpuResults);
-          } catch (error) {
-            console.log("Cannot retrieve GPU Readings.");
-            console.log(error);
-          }
-
-          await sleep(pauseFor);
-        }
-
-        const directoryPath = '/storage/ComfyUI/output'; 
-        const prefix = `futr_${job.id}__`;
-
-        try {
-          var outputURLs = await processFiles(directoryPath, prefix, job.id);
-
-          console.log(`Job ${job.id} completed and uploaded: ${outputURLs.join(",")}`);
-
-          done(null, {images: outputURLs, supplier_id: supplierID, gpu_stats: gpuReadings});
-        } catch (readError) {
-          console.error("Error:", readError);
-        }
-      }
-
-    }); //queue.process
-  } catch(connectError) {
-    console.log(`COULD NOT CONNECT TO QUEUE... Trying again in 5 seconds...`);
-  } 
+  await Promise.all(processPromises);
 };
 
 function getGpuInfo() {
@@ -242,7 +295,28 @@ function getGpuInfo() {
         console.log(stderr);
         reject(new Error('Failed to fetch GPU info'));
       } else {
-        resolve(stdout.trim());
+        const output = stdout.trim();
+        // Split the string by comma and trim each part
+        const parts = output.split(',').map(part => part.trim());
+
+        // Construct the JSON object
+        const gpuInfo = {
+          timestamp: parts[0],
+          driver_version: parts[1],
+          name: parts[2],
+          memory: {
+            total: parts[3],
+            used: parts[4],
+            free: parts[5]
+          },
+          pstate: parts[6],
+          power: {
+            draw: parts[7],
+            limit: parts[8]
+          }
+        };
+
+        resolve(JSON.stringify(gpuInfo));
       }
     });
   });
@@ -272,7 +346,7 @@ function getPythonInfo(callback) {
 let comfyUiProcess;
 
 function startComfyUi() {
-  comfyUiProcess = spawn('python', ['/storage/ComfyUI/main.py', '--listen', '0.0.0.0', '--extra-model-paths-config', '/extra_model_paths.yml']);
+  comfyUiProcess = spawn('python', ['/storage/ComfyUI/main.py', '--listen', '0.0.0.0', '--extra-model-paths-config', '/extra_model_paths.yml', '--disable-xformers']);
 
   comfyUiProcess.stdout.on('data', (data) => {
     processLog(data);
