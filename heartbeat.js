@@ -234,7 +234,6 @@ async function mainLoop() {
   } 
 };
 
-
 function getGpuInfo() {
   return new Promise((resolve, reject) => {
     exec('nvidia-smi --query-gpu=timestamp,driver_version,name,memory.total,memory.used,memory.free,pstate,power.draw,power.limit --format=csv,noheader', (error, stdout, stderr) => {
@@ -315,7 +314,7 @@ function triggerRegister() {
 }
 
 
-setInterval(triggerRegister, 10000);
+setInterval(triggerRegister, 60000);
 
 (async function main() {
   while(true) {
