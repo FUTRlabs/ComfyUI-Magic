@@ -169,15 +169,24 @@ var queues = { };
 
 async function pauseAllQueues() {
   console.log("Pausing all queues.");
-  Object.values(queues).forEach(queue => {
-    queue.pause(true, true);
+  Object.values(queues).forEach(async function(queue) {
+    try {
+      await queue.pause(true, true);
+    } catch(error) {
+      console.log("Error pausing queue:");
+      console.log(error);
+    }
   });
 }
 
 async function resumeAllQueues() {
   console.log("Resuming all queues.");
-  Object.values(queues).forEach(queue => {
-    queue.resume(true);
+  Object.values(queues).forEach(async function(queue) {
+    try {
+      await queue.resume(true);
+    } catch(error) {
+      console.log(error);
+    }
   });
 }
 
@@ -202,8 +211,9 @@ async function processJob(job, done) {
         'Content-Type': 'application/json'
       }
     }).catch(
-      function (error) {
+      async function (error) {
         console.log("COMFY ERROR PROCESSING WORKFLOW:",error)
+        await resumeAllQueues();
         done(new Error("COMFY WORKFLOW ERROR:\n\n" + getLast100LogLines()));
         return null;
       }
@@ -255,9 +265,10 @@ async function processJob(job, done) {
     console.log(connectError);
     console.log(`COULD NOT CONNECT TO QUEUE... Trying again in 5 seconds...`);
   } 
-
-  await resumeAllQueues();
 }
+
+var redisClient = null;
+var redisSubscriber = null;
 
 async function mainLoop() {
   console.log("Beginning main loop...");
@@ -267,19 +278,50 @@ async function mainLoop() {
   const defaultRoute = await getDefaultRoute();
   const connectionString = `redis://${supplierID}:@${defaultRoute.split(":")[0]}:6379`;
 
+  if(redisClient == null) {
+    redisClient = new Redis(connectionString, {enableReadyCheck: false, maxRetriesPerRequest: null});
+  }
+
+  if(redisSubscriber == null) {
+    redisSubscriber = new Redis(connectionString, {enableReadyCheck: false, maxRetriesPerRequest: null});
+  }
+
+  const opts = {
+    // redisOpts here will contain at least a property of
+    // connectionName which will identify the queue based on its name
+    createClient: function (type, redisOpts) {
+      switch (type) {
+        case "client":
+          return redisClient;
+        case "subscriber":
+          return redisSubscriber;
+        case "bclient":
+          return new Redis(connectionString, redisOpts);
+        default:
+          throw new Error("Unexpected connection type: ", type);
+      }
+    },
+  };
+
+
   const vramBuckets = getVRAMQueueBuckets(await getGpuInfo());
   console.log(`VRAM BUCKETS: ${vramBuckets}`);
 
   var processPromises = [];
   vramBuckets.forEach(bucket => {
-    queues[bucket] = new Queue(bucket, connectionString);
+    queues[bucket] = new Queue(bucket, opts);
+
     queues[bucket].on("error", async function(error) {
-      await register();
       console.log("SUPPLIER QUEUE ERROR:");
       console.log(error);
     });
+    queues[bucket].on("completed", async function (job, result) {
+      console.log("COMPLETED JOB" + job.id);
+      await resumeAllQueues();
+    })
 
     console.log("Pushing process function to promises for queue: " + bucket);
+
     processPromises.push(queues[bucket].process(processJob));
 
   });
