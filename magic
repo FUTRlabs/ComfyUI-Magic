@@ -96,7 +96,7 @@ if [ -z "${SUPPLIER_ID}" ]; then
   fun_echo "If you'd like to earn during your idle GPU time, go to MineTheFutr.com"
 
   fun_echo "Starting ComfyUI..."
-  cd /storage/ComfyUI && python main.py --listen 0.0.0.0 --extra-model-paths-config /extra_model_paths.yml
+  cd /storage/ComfyUI && python main.py --listen 0.0.0.0 --extra-model-paths-config /extra_model_paths.yml --disable-xformers
 else
   fun_echo "FUTR SUPPLIER_ID Detected."
   fun_echo "Connecting to MineTheFutr.com with ID ${SUPPLIER_ID}"
