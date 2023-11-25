@@ -49,7 +49,8 @@ if [ ! -e $yaml ]; then
   cp /extra_downloads.yml /storage/shared_models/extra_downloads.yml
 fi
 
-fun_echo "Downloading extra models and custom_nodes from shared_models/extra_downloads.yml..."
+fun_echo "Downloading extra models and custom_nodes from /extra_downloads.yml first then /storage/shared_models/extra_downloads.yml next..."
+yaml="/extra_downloads.yml"
 
 mkdir -p /storage/ComfyUI
 cp -r /workspace/ComfyUI/* /storage/ComfyUI/
@@ -59,6 +60,23 @@ chmod -R 777 /storage
 
 # Define base directory from YAML file
 fun_echo "Checking Model Downloads..."
+
+# Loop over the files and download them
+yq e '.files[] | [.path, .url] | join(" ")' $yaml | while read -r line; do
+  # Read path and url into separate variables
+  read -r path url <<< "$line"
+
+  # Create full path by combining base directory and file path
+  full_path="${path}"
+
+  # Create directory structure if it does not exist
+  mkdir -p "$(dirname "$full_path")"
+
+  # Download the file
+  wget -nc -O $full_path $url || true
+done
+
+yaml="/storage/shared_models/extra_downloads.yml"
 
 # Loop over the files and download them
 yq e '.files[] | [.path, .url] | join(" ")' $yaml | while read -r line; do
