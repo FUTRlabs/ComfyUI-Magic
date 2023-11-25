@@ -46,6 +46,7 @@ RUN git clone https://github.com/Fannovel16/comfyui_controlnet_aux && cd comfyui
 RUN git clone https://github.com/jags111/efficiency-nodes-comfyui && cd efficiency-nodes-comfyui && git reset --hard 8cae155233444c9f16172389dedbe38d386f1b15 && ( pip install -r requirements.txt || true )
 RUN git clone https://github.com/Kosinkadink/ComfyUI-AnimateDiff-Evolved.git && cd ComfyUI-AnimateDiff-Evolved && git reset --hard 203313e1ea52c2c76d38dbaaf5790d56eb601ebb && ( pip install -r requirements.txt || true )
 RUN git clone https://github.com/Fannovel16/ComfyUI-Frame-Interpolation.git && cd ComfyUI-Frame-Interpolation && git reset --hard 4f60bf5c04149b3158b8739aff27bdafd5ac9703 && ( python install.py || true )
+COPY ./h264-discord.json /workspace/ComfyUI/custom_nodes/ComfyUI-VideoHelperSuite/video_formats/h264-discord.json
 
 RUN mkdir -p /workspace/ComfyUI/models/facerestore_models/ && wget -nc -O /workspace/ComfyUI/models/facerestore_models/codeformer.pth https://github.com/sczhou/CodeFormer/releases/download/v0.1.0/codeformer.pth
 #RUN wget -nc -O /workspace/ComfyUI/models/facerestore_models/GFPGANv1.4.pth  https://github.com/TencentARC/GFPGAN/releases/download/v1.3.4/GFPGANv1.4.pth
