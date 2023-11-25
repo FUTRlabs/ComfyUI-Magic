@@ -45,6 +45,7 @@ RUN git clone https://github.com/Kosinkadink/ComfyUI-VideoHelperSuite && cd Comf
 RUN git clone https://github.com/Fannovel16/comfyui_controlnet_aux && cd comfyui_controlnet_aux && git reset --hard 58ce1e01ebb13a38f6f3ab32a31bd3beb065e0d8 && ( pip install -r requirements.txt || true )
 RUN git clone https://github.com/jags111/efficiency-nodes-comfyui && cd efficiency-nodes-comfyui && git reset --hard 8cae155233444c9f16172389dedbe38d386f1b15 && ( pip install -r requirements.txt || true )
 RUN git clone https://github.com/Kosinkadink/ComfyUI-AnimateDiff-Evolved.git && cd ComfyUI-AnimateDiff-Evolved && git reset --hard 203313e1ea52c2c76d38dbaaf5790d56eb601ebb && ( pip install -r requirements.txt || true )
+RUN git clone https://github.com/Fannovel16/ComfyUI-Frame-Interpolation.git && cd ComfyUI-Frame-Interpolation && git reset --hard 4f60bf5c04149b3158b8739aff27bdafd5ac9703 && ( python install.py || true )
 
 RUN mkdir -p /workspace/ComfyUI/models/facerestore_models/ && wget -nc -O /workspace/ComfyUI/models/facerestore_models/codeformer.pth https://github.com/sczhou/CodeFormer/releases/download/v0.1.0/codeformer.pth
 #RUN wget -nc -O /workspace/ComfyUI/models/facerestore_models/GFPGANv1.4.pth  https://github.com/TencentARC/GFPGAN/releases/download/v1.3.4/GFPGANv1.4.pth
@@ -67,4 +68,8 @@ COPY ./extra_downloads.yml /extra_downloads.yml
 COPY ./magic /bin/magic
 COPY ./.env /root/.env
 COPY ./heartbeat.js /root/heartbeat.js
+
+RUN mv /opt/conda/bin/ffmpeg /opt/conda/bin/ffmpeg-ancient
+RUN ln -s /usr/bin/ffmpeg /opt/conda/bin/ffmpeg
+WORKDIR /storage/ComfyUI
 CMD ["/bin/magic"]

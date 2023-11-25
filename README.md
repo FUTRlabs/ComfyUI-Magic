@@ -18,7 +18,7 @@ Preview:
 4. Have roughly 20GB of space ready for default models and room to grow for any others you might want to add!
 
 ```
-docker run --name comfyui-magic --restart=unless-stopped -p 8188:8188 --gpus all -it --rm -v magic:/storage futrlabsmagic/comfyui-magic:latest
+docker run --name comfyui-magic -p 8188:8188 --gpus all -it --rm -v magic:/storage futrlabsmagic/comfyui-magic:latest
 ```
 
 ### Run it as a service
@@ -58,6 +58,7 @@ Currently, we automatically bake in stable mixtures of these popular custom node
 - https://github.com/Fannovel16/comfyui_controlnet_aux
 - https://github.com/jags111/efficiency-nodes-comfyui
 - https://github.com/Kosinkadink/ComfyUI-AnimateDiff-Evolved.git
+- https://github.com/Fannovel16/ComfyUI-Frame-Interpolation.git
 
 ### Automatic downloading of models at boot
 
