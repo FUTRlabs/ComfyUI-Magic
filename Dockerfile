@@ -73,4 +73,5 @@ COPY ./heartbeat.js /root/heartbeat.js
 RUN mv /opt/conda/bin/ffmpeg /opt/conda/bin/ffmpeg-ancient
 RUN ln -s /usr/bin/ffmpeg /opt/conda/bin/ffmpeg
 WORKDIR /storage/ComfyUI
+RUN echo '0.2.0' > /version
 CMD ["/bin/magic"]

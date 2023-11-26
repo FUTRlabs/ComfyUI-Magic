@@ -20,6 +20,25 @@ if(process.env.PRODUCTION === 'false') {
   production = false;
 } 
 
+const versionFilePath = '/version';
+const expectedVersion = '0.2.0';
+
+function outOfDate() {
+  console.log("YOUR CONTAINER IS OUT OF DATE. STOP THIS CONTAINER AND THEN RUN: ");
+  console.log("docker pull futrlabsmagic/comfyui-magic:latest");
+  process.exit(1);  
+}
+
+if( fs.existsSync(versionFilePath) ) {
+  const versionContents = fs.readFileSync(versionFilePath, 'utf8').trim();
+  if(versionContents !== expectedVersion) {
+    outOfDate();
+  } else {
+    console.log("Up to date! v" + expectedVersion);
+  }
+} else {
+  outOfDate();
+}
 
 let logs = [];
 
@@ -129,6 +148,14 @@ async function processFiles(directoryPath, prefix, jobId) {
 
       const fileKey = `output/${jobId}_${filename}`;
       await uploadToS3("futr-workflows", fileKey, fileStream);
+
+      try {
+        console.log("Deleting file.");
+        fs.unlinkSync(filePath);
+      } catch(err) {
+        console.log("Error deleting file:");
+        console.log(err);
+      }
 
       return `https://futr-workflows.s3.us-east-2.amazonaws.com/${fileKey}`;
     });
@@ -416,7 +443,6 @@ setInterval(triggerRegister, 60000);
 
 (async function main() {
   while(true) {
-
     try {
       await mainLoop();
     } catch(error) {
