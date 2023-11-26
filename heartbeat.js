@@ -250,9 +250,10 @@ async function processJob(job, done) {
         'Content-Type': 'application/json'
       }
     }).catch(
-      function (error) {
+      async function (error) {
         console.log("COMFY ERROR PROCESSING WORKFLOW:",error)
         done(new Error("COMFY WORKFLOW ERROR:\n\n" + getLast100LogLines()));
+        await resumeAllQueues();
         return false;
       }
     ) 
@@ -268,6 +269,7 @@ async function processJob(job, done) {
         console.log("Waiting for job to complete...");
         if(logs.join(" ").includes("Exception during processing")) {
           done(new Error("COMFY WORKFLOW ERROR:\n\n" + getLast100LogLines()));
+          await resumeAllQueues();
           return;
         }
 
