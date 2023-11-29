@@ -38,6 +38,7 @@ fun_echo "Proudly sponsored by MineTheFutr.com"
 mkdir -p /storage/shared_models/
 mkdir -p /storage/custom_nodes/
 mkdir -p /storage/models/
+mkdir -p /storage/ComfyUI/styles
 
 chmod -R 777 /storage/shared_models
 

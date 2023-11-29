@@ -23,7 +23,7 @@ COPY ./.zshrc /root/.zshrc
 WORKDIR  /workspace/
 #COPY ./src/HiFiFace-pytorch /workspace/src/HiFiFace-pytorch
 
-RUN git clone https://github.com/comfyanonymous/ComfyUI.git /workspace/ComfyUI
+RUN git clone https://github.com/comfyanonymous/ComfyUI.git /workspace/ComfyUI && cd ComfyUI && git reset --hard 777f6b15225197898a5f49742682a2be859072d7
 RUN git clone https://github.com/ltdrdata/ComfyUI-Manager.git /workspace/ComfyUI/custom_nodes/ComfyUI-Manager
 
 
@@ -39,13 +39,15 @@ RUN git clone https://github.com/storyicon/comfyui_segment_anything.git && cd co
 RUN git clone https://github.com/Gourieff/comfyui-reactor-node.git && cd comfyui-reactor-node && git reset --hard 9404b14b8c1e35845967c9bd4455fcccd28705e6 && ( pip install -r requirements.txt || true )
 RUN git clone https://github.com/WASasquatch/was-node-suite-comfyui.git && cd was-node-suite-comfyui && git reset --hard 4e53775e650a7e2d2d1d73056bb914d7edc57f69 && ( pip install -r requirements.txt || true )
 RUN git clone https://github.com/pythongosssss/ComfyUI-Custom-Scripts.git && cd ComfyUI-Custom-Scripts && git reset --hard 27555d4f71bb4e24b87571f89eab2b4a06677bb6 && ( pip install -r requirements.txt || true )
-RUN git clone https://github.com/RockOfFire/ComfyUI_Comfyroll_CustomNodes.git && cd ComfyUI_Comfyroll_CustomNodes && git reset --hard 9c9f7aaa06eaa903fa18feac31735fc7591f7a08 && ( pip install -r requirements.txt || true )
+RUN git clone https://github.com/RockOfFire/ComfyUI_Comfyroll_CustomNodes.git && cd ComfyUI_Comfyroll_CustomNodes && git reset --hard 11abadd037ab87a37ab4dc208f552515312c5278 && ( pip install -r requirements.txt || true )
 RUN git clone https://github.com/Kosinkadink/ComfyUI-Advanced-ControlNet && cd ComfyUI-Advanced-ControlNet && git reset --hard b5e77ecc3f8cd274f13996bf05816c601d90006f && ( pip install -r requirements.txt || true )
-RUN git clone https://github.com/Kosinkadink/ComfyUI-VideoHelperSuite && cd ComfyUI-VideoHelperSuite && git reset --hard aba622c97f1a656164658f0d75a801f1ac35a4fe && ( pip install -r requirements.txt || true )
+RUN git clone https://github.com/Kosinkadink/ComfyUI-VideoHelperSuite && cd ComfyUI-VideoHelperSuite && git reset --hard 0592867fa6ade998e5930aac6f508084184229a1 && ( pip install -r requirements.txt || true )
 RUN git clone https://github.com/Fannovel16/comfyui_controlnet_aux && cd comfyui_controlnet_aux && git reset --hard 58ce1e01ebb13a38f6f3ab32a31bd3beb065e0d8 && ( pip install -r requirements.txt || true )
 RUN git clone https://github.com/jags111/efficiency-nodes-comfyui && cd efficiency-nodes-comfyui && git reset --hard 8cae155233444c9f16172389dedbe38d386f1b15 && ( pip install -r requirements.txt || true )
 RUN git clone https://github.com/Kosinkadink/ComfyUI-AnimateDiff-Evolved.git && cd ComfyUI-AnimateDiff-Evolved && git reset --hard 203313e1ea52c2c76d38dbaaf5790d56eb601ebb && ( pip install -r requirements.txt || true )
 RUN git clone https://github.com/Fannovel16/ComfyUI-Frame-Interpolation.git && cd ComfyUI-Frame-Interpolation && git reset --hard 4f60bf5c04149b3158b8739aff27bdafd5ac9703 && ( python install.py || true )
+RUN git clone https://github.com/ssitu/ComfyUI_UltimateSDUpscale.git --recursive && cd ComfyUI_UltimateSDUpscale && git reset --hard 6ea48202a76ccf5904ddfa85f826efa80dd50520 
+RUN git clone https://github.com/mav-rik/facerestore_cf.git && cd facerestore_cf && git reset --hard 2b5d727ed658e0b3feb14a620d67dad1b1bcb0ab && ( pip install -r requirements.txt || true )
 COPY ./h264-discord.json /workspace/ComfyUI/custom_nodes/ComfyUI-VideoHelperSuite/video_formats/h264-discord.json
 
 RUN mkdir -p /workspace/ComfyUI/models/facerestore_models/ && wget -nc -O /workspace/ComfyUI/models/facerestore_models/codeformer.pth https://github.com/sczhou/CodeFormer/releases/download/v0.1.0/codeformer.pth
@@ -73,5 +75,8 @@ COPY ./heartbeat.js /root/heartbeat.js
 RUN mv /opt/conda/bin/ffmpeg /opt/conda/bin/ffmpeg-ancient
 RUN ln -s /usr/bin/ffmpeg /opt/conda/bin/ffmpeg
 WORKDIR /storage/ComfyUI
-RUN echo '0.2.0' > /version
+RUN echo '0.3.0' > /version
+
+RUN pip install openai==0.28 numexpr
+
 CMD ["/bin/magic"]

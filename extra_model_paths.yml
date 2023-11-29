@@ -10,3 +10,5 @@ comfyui:
   upscale_models: upscale_models/
   vae: vae/  
   facerestore_models: facerestore_models/
+  ipadapter: ipadapter
+  gligen: gligen

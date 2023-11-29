@@ -21,7 +21,7 @@ if(process.env.PRODUCTION === 'false') {
 } 
 
 const versionFilePath = '/version';
-const expectedVersion = '0.2.0';
+const expectedVersion = '0.3.0';
 
 function outOfDate() {
   console.log("YOUR CONTAINER IS OUT OF DATE. STOP THIS CONTAINER AND THEN RUN: ");
