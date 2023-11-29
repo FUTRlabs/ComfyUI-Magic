@@ -31,7 +31,8 @@ function outOfDate() {
 
 if( fs.existsSync(versionFilePath) ) {
   const versionContents = fs.readFileSync(versionFilePath, 'utf8').trim();
-  if(versionContents !== expectedVersion) {
+  console.log(`Container version: ${versionContents} == ${expectedVersion}`) 
+  if(versionContents != expectedVersion) {
     outOfDate();
   } else {
     console.log("Up to date! v" + expectedVersion);
