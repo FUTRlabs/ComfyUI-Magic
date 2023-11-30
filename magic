@@ -122,7 +122,7 @@ else
   while true; do
     if [ "${PRODUCTION}" != false ]; then
       fun_echo "Updating heartbeat.js before starting..."
-      wget -O ~/heartbeat.js https://raw.githubusercontent.com/FUTRlabs/ComfyUI-Magic/main/heartbeat.js
+      wget --no-cache -O ~/heartbeat.js https://raw.githubusercontent.com/FUTRlabs/ComfyUI-Magic/main/heartbeat.js
     fi
 
     (cd ~/ && node ~/heartbeat.js) || true 
