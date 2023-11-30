@@ -11,21 +11,21 @@ files:
     url: https://huggingface.co/ai-forever/Real-ESRGAN/resolve/main/RealESRGAN_x2.pth?download=true
   - path: /storage/ComfyUI/custom_nodes/ComfyUI-AnimateDiff-Evolved/models/mm_sd_v15_v2.ckpt
     url: https://huggingface.co/guoyww/animatediff/resolve/main/mm_sd_v15_v2.ckpt?download=true
-  - path: /storage/ComfyUI/custom_nodes/ComfyUI-AnimateDiff-Evolved/motion-lora/v2_lora_PanLeft.ckpt
+  - path: /storage/ComfyUI/custom_nodes/ComfyUI-AnimateDiff-Evolved/motion_lora/v2_lora_PanLeft.ckpt
     url: https://huggingface.co/guoyww/animatediff/resolve/main/v2_lora_PanLeft.ckpt?download=true
-  - path: /storage/ComfyUI/custom_nodes/ComfyUI-AnimateDiff-Evolved/motion-lora/v2_lora_PanRight.ckpt
+  - path: /storage/ComfyUI/custom_nodes/ComfyUI-AnimateDiff-Evolved/motion_lora/v2_lora_PanRight.ckpt
     url: https://huggingface.co/guoyww/animatediff/resolve/main/v2_lora_PanRight.ckpt?download=true
-  - path: /storage/ComfyUI/custom_nodes/ComfyUI-AnimateDiff-Evolved/motion-lora/v2_lora_RollingAnticlockwise.ckpt
+  - path: /storage/ComfyUI/custom_nodes/ComfyUI-AnimateDiff-Evolved/motion_lora/v2_lora_RollingAnticlockwise.ckpt
     url: https://huggingface.co/guoyww/animatediff/resolve/main/v2_lora_RollingAnticlockwise.ckpt?download=true 
-  - path: /storage/ComfyUI/custom_nodes/ComfyUI-AnimateDiff-Evolved/motion-lora/v2_lora_RollingClockwise.ckpt
+  - path: /storage/ComfyUI/custom_nodes/ComfyUI-AnimateDiff-Evolved/motion_lora/v2_lora_RollingClockwise.ckpt
     url: https://huggingface.co/guoyww/animatediff/resolve/main/v2_lora_RollingClockwise.ckpt?download=true
-  - path: /storage/ComfyUI/custom_nodes/ComfyUI-AnimateDiff-Evolved/motion-lora/v2_lora_TiltDown.ckpt
+  - path: /storage/ComfyUI/custom_nodes/ComfyUI-AnimateDiff-Evolved/motion_lora/v2_lora_TiltDown.ckpt
     url: https://huggingface.co/guoyww/animatediff/resolve/main/v2_lora_TiltDown.ckpt?download=true
-  - path: /storage/ComfyUI/custom_nodes/ComfyUI-AnimateDiff-Evolved/motion-lora/v2_lora_TiltUp.ckpt
+  - path: /storage/ComfyUI/custom_nodes/ComfyUI-AnimateDiff-Evolved/motion_lora/v2_lora_TiltUp.ckpt
     url: https://huggingface.co/guoyww/animatediff/resolve/main/v2_lora_TiltUp.ckpt?download=true
-  - path: /storage/ComfyUI/custom_nodes/ComfyUI-AnimateDiff-Evolved/motion-lora/v2_lora_ZoomIn.ckpt
+  - path: /storage/ComfyUI/custom_nodes/ComfyUI-AnimateDiff-Evolved/motion_lora/v2_lora_ZoomIn.ckpt
     url: https://huggingface.co/guoyww/animatediff/resolve/main/v2_lora_ZoomIn.ckpt?download=true 
-  - path: /storage/ComfyUI/custom_nodes/ComfyUI-AnimateDiff-Evolved/motion-lora/v2_lora_ZoomOut.ckpt
+  - path: /storage/ComfyUI/custom_nodes/ComfyUI-AnimateDiff-Evolved/motion_lora/v2_lora_ZoomOut.ckpt
     url: https://huggingface.co/guoyww/animatediff/resolve/main/v2_lora_ZoomOut.ckpt?download=true
   - path: /storage/shared_models/controlnet/controlnet11Models_animeline.safetensors
     url: https://civitai.com/api/download/models/44879?type=Model&format=SafeTensor&size=pruned&fp=fp16
