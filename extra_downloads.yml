@@ -57,8 +57,6 @@ files:
     url: https://huggingface.co/h94/IP-Adapter/resolve/main/models/ip-adapter_sd15_light.safetensors?download=true
   - path: /storage/shared_models/ipadapter/ip-adapter_sd15_vit-G.safetensors
     url: https://huggingface.co/h94/IP-Adapter/resolve/main/models/ip-adapter_sd15_vit-G.safetensors?download=true
-  - path: /storage/shared_models/clip_vision/
-    url: https://huggingface.co/h94/IP-Adapter/resolve/main/models/image_encoder/model.safetensors
   - path: /storage/shared_models/gligen/gligen_sd14_textbox_pruned_fp16.safetensors
     url: https://huggingface.co/comfyanonymous/GLIGEN_pruned_safetensors/resolve/main/gligen_sd14_textbox_pruned_fp16.safetensors?download=true
   - path: /storage/ComfyUI/models/facerestore_models/GFPGANv1.4.pth
