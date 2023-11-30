@@ -44,7 +44,7 @@ RUN git clone https://github.com/Kosinkadink/ComfyUI-Advanced-ControlNet && cd C
 RUN git clone https://github.com/Kosinkadink/ComfyUI-VideoHelperSuite && cd ComfyUI-VideoHelperSuite && git reset --hard 0592867fa6ade998e5930aac6f508084184229a1 && ( pip install -r requirements.txt || true )
 RUN git clone https://github.com/Fannovel16/comfyui_controlnet_aux && cd comfyui_controlnet_aux && git reset --hard 58ce1e01ebb13a38f6f3ab32a31bd3beb065e0d8 && ( pip install -r requirements.txt || true )
 RUN git clone https://github.com/jags111/efficiency-nodes-comfyui && cd efficiency-nodes-comfyui && git reset --hard 8cae155233444c9f16172389dedbe38d386f1b15 && ( pip install -r requirements.txt || true )
-RUN git clone https://github.com/Kosinkadink/ComfyUI-AnimateDiff-Evolved.git && cd ComfyUI-AnimateDiff-Evolved && git reset --hard 203313e1ea52c2c76d38dbaaf5790d56eb601ebb && ( pip install -r requirements.txt || true )
+RUN git clone https://github.com/Kosinkadink/ComfyUI-AnimateDiff-Evolved.git && cd ComfyUI-AnimateDiff-Evolved && git reset --hard 724aad4cecca31845b57f69cb203909717ebae08 && ( pip install -r requirements.txt || true )
 RUN git clone https://github.com/Fannovel16/ComfyUI-Frame-Interpolation.git && cd ComfyUI-Frame-Interpolation && git reset --hard 4f60bf5c04149b3158b8739aff27bdafd5ac9703 && ( python install.py || true )
 RUN git clone https://github.com/ssitu/ComfyUI_UltimateSDUpscale.git --recursive && cd ComfyUI_UltimateSDUpscale && git reset --hard 6ea48202a76ccf5904ddfa85f826efa80dd50520 
 RUN git clone https://github.com/mav-rik/facerestore_cf.git && cd facerestore_cf && git reset --hard 2b5d727ed658e0b3feb14a620d67dad1b1bcb0ab && ( pip install -r requirements.txt || true )
