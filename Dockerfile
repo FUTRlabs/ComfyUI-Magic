@@ -21,7 +21,6 @@ RUN sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master
 COPY ./.zshrc /root/.zshrc
 
 WORKDIR  /workspace/
-#COPY ./src/HiFiFace-pytorch /workspace/src/HiFiFace-pytorch
 
 RUN git clone https://github.com/comfyanonymous/ComfyUI.git /workspace/ComfyUI && cd ComfyUI && git reset --hard 777f6b15225197898a5f49742682a2be859072d7
 RUN git clone https://github.com/ltdrdata/ComfyUI-Manager.git /workspace/ComfyUI/custom_nodes/ComfyUI-Manager
@@ -48,16 +47,23 @@ RUN git clone https://github.com/Kosinkadink/ComfyUI-AnimateDiff-Evolved.git && 
 RUN git clone https://github.com/Fannovel16/ComfyUI-Frame-Interpolation.git && cd ComfyUI-Frame-Interpolation && ( python install.py || true )
 RUN git clone https://github.com/ssitu/ComfyUI_UltimateSDUpscale.git --recursive 
 RUN git clone https://github.com/mav-rik/facerestore_cf.git && cd facerestore_cf && ( pip install -r requirements.txt || true )
+RUN git clone https://github.com/ManglerFTW/ComfyI2I.git && cd ComfyI2I && ( pip install -r requirements.txt || true )
+RUN git clone https://github.com/BadCafeCode/masquerade-nodes-comfyui.git 
 COPY ./h264-discord.json /workspace/ComfyUI/custom_nodes/ComfyUI-VideoHelperSuite/video_formats/h264-discord.json
 
 RUN mkdir -p /workspace/ComfyUI/models/facerestore_models/ && wget -nc -O /workspace/ComfyUI/models/facerestore_models/codeformer.pth https://github.com/sczhou/CodeFormer/releases/download/v0.1.0/codeformer.pth
-#RUN wget -nc -O /workspace/ComfyUI/models/facerestore_models/GFPGANv1.4.pth  https://github.com/TencentARC/GFPGAN/releases/download/v1.3.4/GFPGANv1.4.pth
 
-# Cached prior to deletion
 RUN mkdir -p /workspace/ComfyUI/models/insightface/ 
 COPY ./models/inswapper_128.onnx /workspace/ComfyUI/models/insightface/inswapper_128.onnx
+COPY ./models/1x_ArtClarity.pth /workspace/ComfyUI/models/upscale_models/1x_ArtClarity.pth
+COPY ./models/4xLSDIRCompactv2.pth /workspace/ComfyUI/models/upscale_models/4xLSDIRCompactv2.pth
+COPY ./models/4x-Rybu.pth /workspace/ComfyUI/models/upscale_models/4x-Rybu.pth
+COPY ./models/4xPSNR.pth /workspace/ComfyUI/models/upscale_models/4xPSNR.pth
 
-# Add Tini
+COPY ./models/embeddings/* /workspace/ComfyUI/models/embeddings/
+RUN mkdir -p /workspace/ComfyUI/input/negatives
+COPY ./negative_prompts/* /workspace/ComfyUI/input/negatives/
+
 ENV TINI_VERSION v0.19.0
 ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /tini
 RUN chmod +x /tini
