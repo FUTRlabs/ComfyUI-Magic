@@ -49,6 +49,7 @@ RUN git clone https://github.com/ssitu/ComfyUI_UltimateSDUpscale.git --recursive
 RUN git clone https://github.com/mav-rik/facerestore_cf.git && cd facerestore_cf && ( pip install -r requirements.txt || true )
 RUN git clone https://github.com/ManglerFTW/ComfyI2I.git && cd ComfyI2I && ( pip install -r requirements.txt || true )
 RUN git clone https://github.com/BadCafeCode/masquerade-nodes-comfyui.git 
+RUN git clone https://github.com/melMass/comfy_mtb.git && cd comfy_mtb && ( pip install -r requirements.txt || true )
 COPY ./h264-discord.json /workspace/ComfyUI/custom_nodes/ComfyUI-VideoHelperSuite/video_formats/h264-discord.json
 
 RUN mkdir -p /workspace/ComfyUI/models/facerestore_models/ && wget -nc -O /workspace/ComfyUI/models/facerestore_models/codeformer.pth https://github.com/sczhou/CodeFormer/releases/download/v0.1.0/codeformer.pth
