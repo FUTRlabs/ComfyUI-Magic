@@ -82,7 +82,7 @@ COPY ./heartbeat.js /root/heartbeat.js
 RUN mv /opt/conda/bin/ffmpeg /opt/conda/bin/ffmpeg-ancient
 RUN ln -s /usr/bin/ffmpeg /opt/conda/bin/ffmpeg
 WORKDIR /storage/ComfyUI
-RUN echo '0.3.4' > /version
+RUN echo '0.3.5' > /version
 
 RUN pip install openai==0.28 numexpr
 
