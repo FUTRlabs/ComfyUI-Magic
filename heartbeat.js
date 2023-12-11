@@ -295,7 +295,7 @@ async function processJob(job, done) {
       try {
         var outputURLs = await processFiles(directoryPath, prefix, job.id);
 
-        console.log(`Job ${job.id} completed and uploaded: ${outputURLs.join(",")}`);
+        console.log(`Job ${job.id} completed and uploaded.`);
 
         done(null, {images: outputURLs, supplier_id: supplierID, gpu_stats: gpuReadings});
       } catch (readError) {
