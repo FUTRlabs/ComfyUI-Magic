@@ -1,6 +1,8 @@
 files:
   - path: /storage/shared_models/checkpoints/cyberrealistic_v40.safetensors
     url: https://civitai.com/api/download/models/198401?type=Model&format=SafeTensor&size=pruned&fp=fp16
+  - path: /storage/shared_models/checkpoints/cyberrealistic_classicV20.safetensors
+    url: https://civitai.com/api/download/models/165271?type=Model&format=SafeTensor&size=pruned&fp=fp16
   - path: /storage/shared_models/checkpoints/MOHAWK_v18VAEBaked.safetensors
     url: https://huggingface.co/n0madic/MOHAWK_v18VAEBaked/resolve/main/MOHAWK_v18VAEBaked.safetensors?download=true  
   - path: /storage/shared_models/upscale_models/RealESRGAN_x4.pth
