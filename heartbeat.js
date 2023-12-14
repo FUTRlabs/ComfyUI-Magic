@@ -253,7 +253,7 @@ async function processJob(job, done) {
     }).catch(
       async function (error) {
         console.log("COMFY ERROR PROCESSING WORKFLOW:",error)
-        done(new Error("COMFY WORKFLOW ERROR:\n\n" + getLast100LogLines()));
+        done(new Error("SUPPLIER " + supplierID + ": COMFY WORKFLOW ERROR:\n\n" + getLast100LogLines()));
         await resumeAllQueues();
         return false;
       }
